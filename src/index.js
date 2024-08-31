@@ -1,3 +1,3 @@
-const message = 'Hello Node';
+import { startServer } from "./server.js";
 
-console.log(message);
+startServer();
