@@ -2,6 +2,8 @@ import createHttpError from "http-errors"
 
 import * as contactServices from "../services/contacts.js";
 
+import { contactAddSchema } from "../validation/contacts.js";
+
 export const getAllContactsController = async (req, res, next) => {
     
     const data = await contactServices.getAllContacts();
@@ -32,6 +34,9 @@ export const getContactByIdController = async (req, res ) => {
 }
 
 export const addContactController = async (req, res) => {
+    const { error } = contactAddSchema.validate(req.body);
+    console.log(error);
+
     const data = await contactServices.createContact(req.body);
     
     res.status(201).json({
