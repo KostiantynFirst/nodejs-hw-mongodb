@@ -34,8 +34,6 @@ export const getContactByIdController = async (req, res ) => {
 }
 
 export const addContactController = async (req, res) => {
-    const { error } = contactAddSchema.validate(req.body);
-    console.log(error);
 
     const data = await contactServices.createContact(req.body);
     
