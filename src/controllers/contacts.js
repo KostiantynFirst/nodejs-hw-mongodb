@@ -4,14 +4,19 @@ import * as contactServices from "../services/contacts.js";
 
 import parsePaginationParams from "../utils/parsPaginationParams.js";
 
+import parseSortParams from "../utils/parsSortParams.js";
+
+import { sortFields } from "../db/models/Contact.js";
+
 
 export const getAllContactsController = async (req, res, next) => {
     
     const { perPage, page } = parsePaginationParams(req.query);
-    console.log(perPage);
-    console.log(page);
+    const { sortBy, sortOrder } = parseSortParams({...req.query, sortFields});
 
-    const data = await contactServices.getContacts({perPage, page});
+    console.log(req.query)
+
+    const data = await contactServices.getContacts({perPage, page, sortBy, sortOrder});
 
     res.json({
         status: 200,
