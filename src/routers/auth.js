@@ -3,7 +3,7 @@ import { Router } from 'express';
 import ctrlWrapper from '../utils/ctrlWrapper.js';
 import validateBody from '../utils/validateBody.js';
 
-import { userSighnUpSchema } from '../validation/users.js';
+import { userSighnUpSchema, userSighnInSchema } from '../validation/users.js';
 
 import * as authControllers from '../controllers/auth.js';
 
@@ -13,6 +13,12 @@ authRouter.post(
   '/signup',
   validateBody(userSighnUpSchema),
   ctrlWrapper(authControllers.signupController),
+);
+
+authRouter.post(
+  '/signin',
+  validateBody(userSighnInSchema),
+  ctrlWrapper(authControllers.signinController),
 );
 
 export default authRouter;
