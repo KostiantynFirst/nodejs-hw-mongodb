@@ -1,7 +1,7 @@
 import * as authServices from '../services/auth.js';
 
 export const signupController = async (req, res) => {
-  const newUser = await authServices.signup(req.body);
+  const newUser = await authServices.register(req.body);
 
   res.status(201).json({
     status: 201,
@@ -11,7 +11,7 @@ export const signupController = async (req, res) => {
 };
 
 export const signinController = async (req, res) => {
-  const session = await authServices.signin(req.body);
+  const session = await authServices.login(req.body);
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
@@ -25,7 +25,7 @@ export const signinController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: 'Successfully signin',
+    message: 'Successfully logged in an user!',
     data: {
       accessToken: session.accessToken,
     },

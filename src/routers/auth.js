@@ -10,13 +10,13 @@ import * as authControllers from '../controllers/auth.js';
 const authRouter = Router();
 
 authRouter.post(
-  '/signup',
+  '/register',
   validateBody(userSighnUpSchema),
   ctrlWrapper(authControllers.signupController),
 );
 
 authRouter.post(
-  '/signin',
+  '/login',
   validateBody(userSighnInSchema),
   ctrlWrapper(authControllers.signinController),
 );

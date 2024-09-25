@@ -9,9 +9,13 @@ import {
   contactPatchSchema,
 } from '../validation/contacts.js';
 
+import authenticate from '../middlewares/authentificate.js';
+
 import isValidId from '../middlewares/isValidId.js';
 
 const contactRouter = Router();
+
+contactRouter.use(authenticate);
 
 contactRouter.get(
   '/',

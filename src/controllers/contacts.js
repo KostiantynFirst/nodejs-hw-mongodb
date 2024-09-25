@@ -1,83 +1,90 @@
-import createHttpError from "http-errors"
+import createHttpError from 'http-errors';
 
-import * as contactServices from "../services/contacts.js";
+import * as contactServices from '../services/contacts.js';
 
-import parsePaginationParams from "../utils/parsPaginationParams.js";
+import parsePaginationParams from '../utils/parsPaginationParams.js';
 
-import parseSortParams from "../utils/parsSortParams.js";
+import parseSortParams from '../utils/parsSortParams.js';
 
-import { sortFields } from "../db/models/Contact.js";
+import { sortFields } from '../db/models/Contact.js';
 
-import { parseFilterContact } from "../utils/filters/parseFilterContactParams.js";
+import { parseFilterContact } from '../utils/filters/parseFilterContactParams.js';
 
 export const getAllContactsController = async (req, res, next) => {
-    
-    const { perPage, page } = parsePaginationParams(req.query);
-    const { sortBy, sortOrder } = parseSortParams({ ...req.query, sortFields });
-    const filter = parseFilterContact(req.query);
+  const { perPage, page } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams({ ...req.query, sortFields });
+  const filter = parseFilterContact(req.query);
 
-    console.log(req.query)
+  const { _id: userId } = req.user;
 
-    const data = await contactServices.getContacts({perPage, page, sortBy, sortOrder, filter});
+  console.log(req.query);
 
-    res.json({
-        status: 200,
-        message: "Successfully found contacts!",
-        data,
-    });
-}
+  const data = await contactServices.getContacts({
+    perPage,
+    page,
+    sortBy,
+    sortOrder,
+    filter: { ...filter, userId },
+  });
 
-export const getContactByIdController = async (req, res ) => {
-    
-        const { contactId } = req.params;
-        const data = await contactServices.getContactById(contactId);
+  res.json({
+    status: 200,
+    message: 'Successfully found contacts!',
+    data,
+  });
+};
 
-        if (!data) {
+export const getContactByIdController = async (req, res) => {
+  const { contactId } = req.params;
+  const data = await contactServices.getContactById(contactId);
 
-            throw createHttpError(404, `Movie with id=${contactId} not found`);
-        }
-        
-        res.json({
-            status: 200,
-            message: `Successfully found contact with id ${contactId}!`,
-            data,
-        })
+  if (!data) {
+    throw createHttpError(404, `Movie with id=${contactId} not found`);
+  }
 
-}
+  res.json({
+    status: 200,
+    message: `Successfully found contact with id ${contactId}!`,
+    data,
+  });
+};
 
 export const addContactController = async (req, res) => {
+  const { _id: userId } = req.user;
+  const data = await contactServices.createContact({ ...req.body, userId });
 
-    const data = await contactServices.createContact(req.body);
-    
-    res.status(201).json({
-        status: 201,
-        message: "Successfully created a contact!",
-        data,
-    });
-}
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully created a contact!',
+    data,
+  });
+};
 
 export const patchContactController = async (req, res) => {
-    const { contactId } = req.params;
-    const result = await contactServices.updateContact({ _id: contactId }, req.body);
+  const { contactId } = req.params;
+  const result = await contactServices.updateContact(
+    { _id: contactId },
+    req.body,
+  );
 
-    if (!result) {
-        throw createHttpError(404, `Movie with id=${contactId} not found`);
-    }
+  if (!result) {
+    throw createHttpError(404, `Movie with id=${contactId} not found`);
+  }
 
-    res.json({
-        status: 200,
-        message: "Successfully patched a contact!",
-        data: result.data,
-    })
-}
+  res.json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: result.data,
+  });
+};
 
 export const deleteContactController = async (req, res) => {
-    const { contactId } = req.params;
-    const data = await contactServices.deleteContact({ _id: contactId });
+  const { contactId } = req.params;
+  const data = await contactServices.deleteContact({ _id: contactId });
 
-        if (!data) {
-        throw createHttpError(404, `Movie with id=${contactId} not found`);
-        }
-    
-    res.status(204).send();
-}
+  if (!data) {
+    throw createHttpError(404, `Movie with id=${contactId} not found`);
+  }
+
+  res.status(204).send();
+};

@@ -11,7 +11,7 @@ import {
   refreshTokenLifeTime,
 } from '../constants/user.js';
 
-export const signup = async (payload) => {
+export const register = async (payload) => {
   const { email, password } = payload;
 
   const user = await UserCollection.findOne({ email });
@@ -29,7 +29,7 @@ export const signup = async (payload) => {
   return data._doc;
 };
 
-export const signin = async (payload) => {
+export const login = async (payload) => {
   const { email, password } = payload;
   const user = await UserCollection.findOne({ email });
 
@@ -60,3 +60,8 @@ export const signin = async (payload) => {
 
   return userSession;
 };
+
+export const findSessionByAccessToken = (accessToken) =>
+  SessionCollection.findOne({ accessToken });
+
+export const findUser = (filter) => UserCollection.findOne(filter);
