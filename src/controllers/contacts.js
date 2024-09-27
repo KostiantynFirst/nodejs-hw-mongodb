@@ -17,8 +17,6 @@ export const getAllContactsController = async (req, res, next) => {
 
   const { _id: userId } = req.user;
 
-  console.log(req.query);
-
   const data = await contactServices.getContacts({
     perPage,
     page,
@@ -36,7 +34,8 @@ export const getAllContactsController = async (req, res, next) => {
 
 export const getContactByIdController = async (req, res) => {
   const { contactId } = req.params;
-  const data = await contactServices.getContactById(contactId);
+  const { _id: userId } = req.user;
+  const data = await contactServices.getContactById({ contactId, userId });
 
   if (!data) {
     throw createHttpError(404, `Movie with id=${contactId} not found`);
@@ -62,9 +61,11 @@ export const addContactController = async (req, res) => {
 
 export const patchContactController = async (req, res) => {
   const { contactId } = req.params;
+  const { _id: userId } = req.user;
   const result = await contactServices.updateContact(
     { _id: contactId },
     req.body,
+    userId,
   );
 
   if (!result) {
@@ -80,7 +81,8 @@ export const patchContactController = async (req, res) => {
 
 export const deleteContactController = async (req, res) => {
   const { contactId } = req.params;
-  const data = await contactServices.deleteContact({ _id: contactId });
+  const { _id: userId } = req.user;
+  const data = await contactServices.deleteContact({ _id: contactId, userId });
 
   if (!data) {
     throw createHttpError(404, `Movie with id=${contactId} not found`);
