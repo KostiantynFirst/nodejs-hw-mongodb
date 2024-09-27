@@ -10,7 +10,7 @@ import { sortFields } from '../db/models/Contact.js';
 
 import { parseFilterContact } from '../utils/filters/parseFilterContactParams.js';
 
-export const getAllContactsController = async (req, res, next) => {
+export const getAllContactsController = async (req, res) => {
   const { perPage, page } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams({ ...req.query, sortFields });
   const filter = parseFilterContact(req.query);
@@ -35,7 +35,10 @@ export const getAllContactsController = async (req, res, next) => {
 export const getContactByIdController = async (req, res) => {
   const { contactId } = req.params;
   const { _id: userId } = req.user;
-  const data = await contactServices.getContactById({ contactId, userId });
+  const data = await contactServices.getContactById({
+    _id_: contactId,
+    userId,
+  });
 
   if (!data) {
     throw createHttpError(404, `Movie with id=${contactId} not found`);
